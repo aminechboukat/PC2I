@@ -6,39 +6,44 @@ import model.Parcours;
 import model.Position;
 
 /**
- * Cette classe correspond à la VUE dans le modèle MVC.
- * Elle est responsable de l'affichage graphique :
- * - dessin du parcours (ligne brisée)
- * - dessin du cercle
+ * Cette classe correspond à la VUE dans l'architecture MVC.
  * 
- * Elle ne modifie jamais les données du modèle,
- * elle se contente de les lire pour les afficher.
+ * Son rôle est uniquement graphique :
+ * - dessiner le parcours (ligne brisée)
+ * - dessiner le cercle
+ * 
+ * Elle ne modifie jamais le modèle :
+ * elle lit les données du modèle pour les afficher.
  */
 public class Affichage extends JPanel {
 
-    /** Ratio de conversion en X entre le modèle et la vue */
+    /** Facteur de conversion horizontal (modèle → vue) */
     public static final int RATIO_X = 2;
 
-    /** Ratio de conversion en Y entre le modèle et la vue */
+    /** Facteur de conversion vertical (modèle → vue) */
     public static final int RATIO_Y = 5;
 
-    /** Référence vers le parcours (ligne brisée du modèle) */
+    /** Référence vers le modèle représentant le parcours */
     private Parcours parcours;
 
-    /** Référence vers la position du cercle (modèle) */
+    /** Référence vers le modèle représentant la position du cercle */
     private Position maPosition;
 
     /**
      * Constructeur de la vue.
      * 
-     * @param p le modèle contenant la position du cercle
-     * @param parcours le modèle contenant la ligne brisée
+     * Il reçoit les modèles à afficher et
+     * définit la taille de la fenêtre en fonction
+     * des constantes du modèle.
+     * 
+     * @param p le modèle Position (cercle)
+     * @param parcours le modèle Parcours (ligne brisée)
      */
     public Affichage(Position p, Parcours parcours) {
         this.maPosition = p;
         this.parcours = parcours;
 
-        // Définition de la taille de la fenêtre à partir des constantes du modèle
+        // Définition de la taille de la fenêtre
         setPreferredSize(
             new Dimension(
                 (Position.BEFORE + Position.AFTER) * RATIO_X,
@@ -48,25 +53,28 @@ public class Affichage extends JPanel {
     }
 
     /**
-     * Méthode appelée automatiquement par Swing pour redessiner la fenêtre.
+     * Méthode appelée automatiquement par Swing
+     * pour redessiner la fenêtre.
      * 
-     * Elle transforme les coordonnées du modèle en coordonnées de la vue
-     * puis dessine le parcours et le cercle.
+     * Elle transforme les coordonnées du modèle
+     * en coordonnées de la vue puis effectue le dessin.
      */
     @Override
     public void paint(Graphics g) {
         super.paint(g); // Nettoie l'affichage avant de redessiner
 
-        /* 
-         * Dessin de la ligne brisée
-        */
+        
+
+        /*
+         * Dessin de la ligne brisée (parcours)
+         */
         for (int i = 0; i < parcours.getPoints().size() - 1; i++) {
 
             // Récupération de deux points consécutifs du modèle
             Point p1 = parcours.getPoints().get(i);
             Point p2 = parcours.getPoints().get(i + 1);
 
-            // Transformation des coordonnées du modèle vers la vue
+            // Conversion des coordonnées du modèle vers la vue
             int x1 = (p1.x + Position.BEFORE) * RATIO_X;
             int y1 = (Position.H_MAX - p1.y) * RATIO_Y;
             int x2 = (p2.x + Position.BEFORE) * RATIO_X;
@@ -76,20 +84,37 @@ public class Affichage extends JPanel {
             g.drawLine(x1, y1, x2, y2);
         }
 
-        
+        /*
+         * Dessin du cercle
+         */
 
-        // Taille du cercle dans la vue
+        // Dimensions du cercle dans la vue
         int largeur = Position.HAUTEUR_OVALE * RATIO_X;
         int hauteur = Position.HAUTEUR_OVALE * RATIO_Y;
 
-        // Position du cercle :
-        // - X est fixe
-        // - Y dépend de la hauteur dans le modèle
+        // Position du cercle dans la vue :
+        // - X est fixe (le cercle reste au même endroit)
+        // - Y dépend de la hauteur du modèle
         int x = Position.BEFORE * RATIO_X - largeur / 2;
         int y = (Position.H_MAX - maPosition.getHauteur()
                 - Position.HAUTEUR_OVALE) * RATIO_Y;
 
-        // Dessin du cercle
+        /*
+         * Changement de couleur du cercle en fonction de sa hauteur.
+         * Cela permet de visualiser son état.
+            */
+            if (maPosition.isCollision()) {
+                g.setColor(Color.MAGENTA); // animation visuelle
+            } else if (maPosition.getHauteur() > 20) {
+                g.setColor(Color.RED);
+            } else if (maPosition.getHauteur() > 0) {
+                g.setColor(Color.ORANGE);
+            } else {
+                g.setColor(Color.BLUE);
+            }
+
+
+        // Dessin final du cercle
         g.drawOval(x, y, largeur, hauteur);
     }
 }

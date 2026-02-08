@@ -1,21 +1,21 @@
 package model;
 
 /**
-  
- * Cette classe représente le modèle du jeu.
- * Elle contient les données qui définissent l'état du cercle :
- * - sa hauteur
- * - les limites de déplacement
+ * Cette classe représente le MODELE du jeu.
  * 
- * La vue ne modifie jamais directement ces valeurs :
- * elle les lit seulement pour afficher le cercle.
+ * Elle contient l'état du cercle :
+ * - sa hauteur verticale
+ * - son avancement horizontal
+ * 
+ * Elle ne contient aucune logique graphique
+ * et ne dépend pas de la vue.
  */
 public class Position {
 
-    /** Valeur ajoutée à la hauteur à chaque saut */
+    /** Valeur ajoutée à la hauteur lors d'un saut */
     public static final int IMPULSION = 10;
 
-    /** Hauteur logique de l'ovale dans le modèle */
+    /** Taille logique du cercle dans le modèle */
     public static final int HAUTEUR_OVALE = 10;
 
     /** Hauteur minimale autorisée pour le cercle */
@@ -33,34 +33,39 @@ public class Position {
     /** Hauteur actuelle du cercle dans le modèle */
     private int hauteur = H_MIN;
 
-     /* Avancement horizontal */
+    /** Avancement horizontal du jeu (défilement du parcours) */
     private int avancement = 0;
+
+    // Indique si le cercle est en collision avec la ligne
+    private boolean collision = false;
 
 
     /**
-     * Accesseur permettant de connaître la hauteur actuelle du cercle.
-     * @return la hauteur du cercle
+     * Accesseur de la hauteur du cercle.
+     * 
+     * @return la hauteur actuelle du cercle
      */
     public int getHauteur() {
         return hauteur;
     }
 
-
+    /**
+     * Accesseur de l'avancement horizontal.
+     * 
+     * @return la valeur d'avancement
+     */
     public int getAvancement() {
         return avancement;
     }
 
     /**
-     * Méthode appelée lors d'un clic de l'utilisateur.
+     * Méthode appelée lors d'un clic souris.
      * 
-     * Elle simule un saut :
-     * - la hauteur augmente d'une valeur fixe
-     * - la hauteur est limitée à H_MAX pour éviter de sortir de la zone visible
+     * Elle simule un saut du cercle en augmentant sa hauteur.
+     * La hauteur est limitée afin de rester dans la zone visible.
      */
     public void jump() {
         hauteur += IMPULSION;
-
-        // Limite haute : le cercle ne peut pas monter indéfiniment
         if (hauteur > H_MAX) {
             hauteur = H_MAX;
         }
@@ -70,8 +75,7 @@ public class Position {
      * Méthode appelée automatiquement par le thread Descendre.
      * 
      * Elle simule la gravité :
-     * - la hauteur diminue progressivement
-     * - la descente s'arrête lorsque la hauteur minimale est atteinte
+     * le cercle redescend progressivement jusqu'à la hauteur minimale.
      */
     public void move() {
         if (hauteur > H_MIN) {
@@ -79,12 +83,22 @@ public class Position {
         }
     }
 
- /**
-     * Fait avancer le cercle dans le parcours.
-     * L’ovale reste fixe dans la vue,
-     * c’est la ligne brisée qui se déplace en sens inverse.
+    /**
+     * Fait avancer le jeu horizontalement.
+     * 
+     * Le cercle reste fixe dans la vue ;
+     * c'est le parcours qui se déplace en sens inverse.
      */
-        public void avancer() {
+    public void avancer() {
         avancement++;
     }
+
+    public boolean isCollision() {
+    return collision;
+}
+
+public void setCollision(boolean collision) {
+    this.collision = collision;
+}
+
 }

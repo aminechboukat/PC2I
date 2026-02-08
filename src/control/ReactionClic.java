@@ -5,12 +5,11 @@ import java.awt.event.MouseEvent;
 import model.Position;
 
 /**
+ * Cette classe correspond au CONTROLEUR dans l'architecture MVC.
  * 
- * Cette classe correspond au CONTRÔLEUR dans le modèle MVC.
  * Elle gère les interactions de l'utilisateur avec la souris.
- * 
- * Lorsqu'un clic est détecté dans la fenêtre,
- * le contrôleur modifie le modèle en demandant un saut du cercle.
+ * Lors d'un clic, elle modifie le modèle
+ * en demandant un saut du cercle.
  */
 public class ReactionClic extends MouseAdapter {
 
@@ -20,23 +19,21 @@ public class ReactionClic extends MouseAdapter {
     /**
      * Constructeur du contrôleur.
      * 
-     * @param position le modèle Position qui sera modifié lors d'un clic
+     * @param position le modèle Position à modifier lors d'un clic
      */
     public ReactionClic(Position position) {
         this.position = position;
     }
 
     /**
-     * Méthode appelée automatiquement par Swing lors d'un clic souris.
+     * Méthode appelée automatiquement par Swing
+     * lorsqu'un clic souris est détecté.
      * 
      * Elle ne modifie pas directement l'affichage :
      * elle se contente de mettre à jour le modèle.
-     * La vue sera ensuite rafraîchie par le thread Redessine.
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-
-        // Demande au modèle de faire sauter le cercle
         position.jump();
     }
 }
