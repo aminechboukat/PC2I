@@ -5,7 +5,7 @@ package model;
  * 
  * Son rôle est de faire avancer le jeu dans le temps :
  * - l'avancement horizontal est incrémenté
- * - le parcours est mis à jour pour rester infini (séance 4)
+ * - le parcours est mis à jour pour rester infini
  * 
  * Ce thread agit uniquement sur le modèle
  * et ne s'occupe pas de l'affichage.
